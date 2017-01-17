@@ -5,6 +5,7 @@ import javax.swing.*;
 public class KenanLab1 implements KeyListener
 {
 private JFrame frame;
+//private JPanel panel;
 private JTextField field;
 private JLabel label;
 private JLabel label2;
@@ -43,6 +44,7 @@ private static boolean finished = false;
    
    public void buildPanel()
    {
+   /*panel = new JPanel();*/
    field = new JTextField();
    field.addKeyListener(this);
    frame.add(field);
