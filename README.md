@@ -1,4 +1,4 @@
 # CPS206
 this is the first lab.
-not using the maze yet, just a square.
+not using file input yet, just a square.
 also, the display dosn't work right.
