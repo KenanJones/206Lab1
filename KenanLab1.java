@@ -25,12 +25,13 @@ private static boolean finished = false;
    buildPanel();
    
    history = new ArrayList<String>();
-   maze = new int[16][8];
+   maze = new int[16][8];//add first two lines from file as size
    for(int col = 0; col < maze.length; col++)
       {
       for(int row = 0; row < maze[col].length; row++)
          {
-         if(col==0 || col == maze.length || row == 0 || row == maze[col].length)
+         //replace with input file info. (this is the border)
+         if(col==0 || col == maze.length-1 || row == 0 || row == maze[col].length-1)
             maze[col][row] = 1;
          }
       }
@@ -60,7 +61,7 @@ private static boolean finished = false;
    if(finished)
       System.out.println("Congratulations!\nYou Survived!");
    }
-   
+   //tests whether a given move is valid, and changes your position if it is.
    public void move(int x, int y)
    {
    if(x == -1 && options.contains("left")){xLoc--; history.add("left");}
@@ -69,7 +70,7 @@ private static boolean finished = false;
    if(y == 1 && options.contains("down")) {xLoc++; history.add("down");}
    showOptions();
    }
-   
+   //fills the labels with the correct text
    public void showOptions()
    {
    getOptions();
@@ -77,7 +78,7 @@ private static boolean finished = false;
    label.setText(options);
    label2.setText("History: " + history);
    }
-   
+   //adds the apropriate word if the direction is open
    public void getOptions()
    {
    options = "";
