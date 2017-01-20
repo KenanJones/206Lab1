@@ -1,10 +1,10 @@
-16
+12
 8
-xxxxxxxxxxxxxxxx
-x         x    x
-xxxx xxx xxx xxx
-x              x
-xxxxx x   xx  xx
-xx    x x  x x f
-x  x  x x  x   x
-xxxxxxxxxxxxxxxx
+xxxxxxxxxxxx
+x          x
+xxxx xxx xxx
+x          x
+xxxxxxx   xx
+xx      x  x
+f  x  x x  x
+xxxxxxxxxxxx

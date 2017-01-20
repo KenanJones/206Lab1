@@ -22,15 +22,26 @@ private static boolean finished = false;
    frame.setLocation(500,300);
    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
    buildPanel();
-   
+
    history = new ArrayList<String>();
-   
-   File file1 = new File("maze1.txt");
-   Scanner inputFile1 = new Scanner(file1);
-   maze = new int[16][8];//add first two lines from file as size
-   
-   //while(inputFile1.hasNext())
-   
+
+   try{
+      File file1 = new File("maze1.txt");
+      Scanner inputFile = new Scanner(file1);
+      maze = new int[inputFile.nextInt()][inputFile.nextInt()];
+      int row = 0;
+      while(inputFile.hasNext()){
+         String input = inputFile.nextLine();
+         for(int i = 0; i < input.length(); i++){
+           maze[row][i] = input.charAt(i);
+           i++;
+         }
+      }
+   }catch(IOException e){
+      System.out.println("invalid maze file");
+      System.exit(0);
+   }
+
    for(int col = 0; col < maze.length; col++){
       for(int row = 0; row < maze[col].length; row++){
          //replace with input file info. (this is the border)
@@ -45,7 +56,7 @@ private static boolean finished = false;
    frame.setVisible(true);
    showOptions();
    }
-   
+
    public void buildPanel(){
    panel = new JPanel();
    field = new JTextField();
@@ -57,7 +68,7 @@ private static boolean finished = false;
    panel.add(label2);
    frame.add(panel);
    }
-   
+
    public static void main (String[] args) throws IOException{
    new Maze();
    if(finished)
@@ -86,7 +97,7 @@ private static boolean finished = false;
    if(maze[xLoc][yLoc-1]==0)options += "up, ";
    if(maze[xLoc][yLoc+1]==0)options += "down, ";
    }
-   
+
    public void keyPressed(KeyEvent e){
    //System.out.println(e.getKeyCode());
    switch(e.getKeyCode())
