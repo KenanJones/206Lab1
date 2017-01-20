@@ -45,14 +45,11 @@ private static boolean finished = false;
       }
    }catch(IOException e){
       System.out.println("invalid maze file");
-      System.exit(0);
+      System.exit(1);
    }
 
    for(int row = 0; row < maze.length; row++){
       for(int col = 0; col < maze[row].length; col++){
-         //replace with input file info. (this is the border)
-         //if(col==0 || col == maze.length-1 || row == 0 || row == maze[col].length-1)
-            //maze[col][row] = 1;
          //System.out.print(maze[row][col]);
       }
    //System.out.println();
