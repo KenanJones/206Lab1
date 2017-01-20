@@ -1,4 +1,5 @@
 import java.awt.event.*;
+import java.awt.*;
 import java.util.*;
 import javax.swing.*;
 import java.io.*;
@@ -8,13 +9,12 @@ private JFrame frame;
 private JPanel panel;
 private JTextField field;
 private JLabel label;
-private JLabel label2;
+private JTextArea textArea;
 
 private int[][] maze;
 private int xLoc, yLoc;
 private ArrayList<String> history;
 private String options;
-private static boolean finished = false;
 
    public Maze(){
    frame = new JFrame();
@@ -30,8 +30,6 @@ private static boolean finished = false;
       Scanner inputFile = new Scanner(file);
       maze = new int[inputFile.nextInt()][inputFile.nextInt()];
       inputFile.nextLine();//consumes an empty line left by nextInt
-      System.out.println(maze.length);
-      System.out.println(maze[0].length);
       int row = 0;
       while(inputFile.hasNext()){
          String input = inputFile.nextLine();
@@ -48,12 +46,12 @@ private static boolean finished = false;
       System.exit(1);
    }
 
-   for(int row = 0; row < maze.length; row++){
+   /*for(int row = 0; row < maze.length; row++){
       for(int col = 0; col < maze[row].length; col++){
-         //System.out.print(maze[row][col]);
+         System.out.print(maze[row][col]);
       }
-   //System.out.println();
-   }
+   System.out.println();
+   }*/
    Random random = new Random();
    boolean test = true;
    while(test){
@@ -69,36 +67,46 @@ private static boolean finished = false;
 
    public void buildPanel(){
    panel = new JPanel();
+   panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
    field = new JTextField();
    field.addKeyListener(this);
+   //field.setVisible(false);
+   field.setMaximumSize(new Dimension(1,1));
    panel.add(field);
    label = new JLabel();
-   frame.add(label);
-   label2 = new JLabel();
-   panel.add(label2);
+   label.setAlignmentX(0.5f);
+   panel.add(label);
+   textArea = new JTextArea(5, 20); 
+   textArea.setEditable(false);
+   textArea.setLineWrap(true);
+   textArea.setWrapStyleWord(true);
+   panel.add(textArea);
    frame.add(panel);
    }
 
    public static void main (String[] args) throws IOException{
    new Maze();
    }
-   //tests whether a given move is valid, and changes your position if it is.
+   
    public void move(int x, int y){
    if(x == -1 && options.contains("left")){xLoc--; history.add("left");}
    if(x == 1 && options.contains("right")){xLoc++; history.add("right");}
    if(y == -1 && options.contains("up"))  {yLoc--; history.add("up");}
    if(y == 1 && options.contains("down")) {yLoc++; history.add("down");}
-   if(maze[yLoc][xLoc] == -1){System.out.println("Congratulations!\nYou Escaped!");System.exit(0);}
+   if(maze[yLoc][xLoc] == -1){
+      System.out.println("Congratulations! You Escaped!");
+      System.out.println("You Moved: " + history);
+      System.exit(0);}
    showOptions();
    }
-   //fills the labels with the correct text
+   
    public void showOptions(){
    getOptions();
    //System.out.println(options);
    label.setText(options);
-   label2.setText("History: " + history);
+   textArea.setText("History: " + history);
    }
-   //adds the apropriate word if the direction is open
+   
    public void getOptions(){
    options = "";
    if(maze[yLoc-1][xLoc]!=1)options += "up, ";
@@ -121,7 +129,8 @@ private static boolean finished = false;
       }
       catch(IOException e){
          try{
-            File testFile = new File(filename + ".txt");
+            filename += ".txt";
+            File testFile = new File(filename);
             Scanner testScan = new Scanner(testFile);
             test = false;
          }
