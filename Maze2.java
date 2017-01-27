@@ -1,4 +1,3 @@
-//the frame does not ever get the focus unless I click it.
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
@@ -16,15 +15,44 @@ public class Maze2 implements KeyListener{
    private String options;
 
    public Maze2(){
+      
+      buildDisplay();
+      getMazeFile();
+      startGame();
+   }
+
+   public static void main (String[] args) throws IOException{
+      new Maze2();
+      }
+
+   public void buildDisplay(){
       frame = new JFrame();
       frame.setSize(111,111);
       frame.setLocation(-100,-100);
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       frame.setFocusable(true);
-      buildPanel();
+      panel = new JPanel();
+      field = new JTextField(1);
+      field.addKeyListener(this);
+      panel.add(field);
+      frame.add(panel);
+   }
+   
+   public void move(int x, int y){
+      if(x == -1 && options.contains("left")){xLoc--; history.add("left");}
+      else if(x == 1 && options.contains("right")){xLoc++; history.add("right");}
+      else if(y == -1 && options.contains("up"))  {yLoc--; history.add("up");}
+      else if(y == 1 && options.contains("down")) {yLoc++; history.add("down");}
+      else{System.out.print("invalid move! ");}
+      if(maze[yLoc][xLoc] == -1){
+         System.out.printf("Congratulations! You Escaped in %d moves!\n",history.size());
+         System.out.println("You Moved: " + history);
+         System.exit(0);
+      }
+      showOptions();
+   }
 
-      history = new ArrayList<String>();
-
+   public void getMazeFile(){
       try{
          File file = new File(getFileInput());
          Scanner inputFile = new Scanner(file);
@@ -45,53 +73,33 @@ public class Maze2 implements KeyListener{
          System.out.println("invalid maze file");
          System.exit(1);
       }
-
+   }
+   
+   public void startGame(){
+      history = new ArrayList<String>();
       Random random = new Random();
       boolean test = true;
       while(test){
          yLoc = random.nextInt(maze.length);
          xLoc = random.nextInt(maze[0].length);
-      if(maze[yLoc][xLoc] == 0) test = false;
+         if(maze[yLoc][xLoc] == 0){
+            test = false;
+         }
       }
       System.out.println(xLoc + ", " + yLoc);
       options = "";
-      setFocus();
-      showOptions();
-      }
-
-   public void buildPanel(){
-      panel = new JPanel();
-      field = new JTextField(1);
-      field.addKeyListener(this);
-      panel.add(field);
-      frame.add(panel);
-      }
-
-   public static void main (String[] args) throws IOException{
-      new Maze2();
-      }
-
-   public void move(int x, int y){
-      if(x == -1 && options.contains("left")){xLoc--; history.add("left");}
-      if(x == 1 && options.contains("right")){xLoc++; history.add("right");}
-      if(y == -1 && options.contains("up"))  {yLoc--; history.add("up");}
-      if(y == 1 && options.contains("down")) {yLoc++; history.add("down");}
-      if(maze[yLoc][xLoc] == -1){
-         System.out.printf("Congratulations! You Escaped in %d moves!\n",history.size());
-         System.out.println("You Moved: " + history);
-         System.exit(0);
-      }
+      frame.setVisible(true);
       showOptions();
    }
-
+   
    public void showOptions(){
       getOptions();
       System.out.println("Options: " + options);
-      setFocus();
+      field.grabFocus();
    }
 
    public void showHistory(){
-      System.out.println("History: " + history);
+      System.out.println("Move History: " + history);
       showOptions();
    }
 
@@ -108,7 +116,7 @@ public class Maze2 implements KeyListener{
       Scanner keyboard = new Scanner(System.in);
       boolean test = true;
       while(test){
-         System.out.println("please enter a maze file name.");
+         System.out.print("please enter a maze file name.");
          filename = keyboard.nextLine();
          if(filename == null)filename = "maze1.txt";
          try{
@@ -129,11 +137,6 @@ public class Maze2 implements KeyListener{
       }
       keyboard.close();
       return filename;
-   }
-    //setVisible(true) gives frame the focus, and then field requests it.
-   public void setFocus(){
-      frame.setVisible(true);
-      field.requestFocusInWindow();
    }
 
    public void keyPressed(KeyEvent e){
