@@ -1,23 +1,20 @@
 import java.awt.event.*;
-import java.awt.*;
 import java.util.*;
 import javax.swing.*;
 import java.io.*;
 
 public class Maze2 implements KeyListener{
    private JFrame frame;
-   private JPanel panel;
    private JTextField field;
 
    private int[][] maze;
    private int xLoc, yLoc;
-   private ArrayList<String> history;
-   private String options;
+   private ArrayList<String> history, options;
 
    public Maze2(){
       
-      buildDisplay();
       getMazeFile();
+      buildDisplay();
       startGame();
    }
 
@@ -27,15 +24,12 @@ public class Maze2 implements KeyListener{
 
    public void buildDisplay(){
       frame = new JFrame();
-      frame.setSize(111,111);
+      frame.setSize(11,11);
       frame.setLocation(-100,-100);
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      frame.setFocusable(true);
-      panel = new JPanel();
       field = new JTextField(1);
       field.addKeyListener(this);
-      panel.add(field);
-      frame.add(panel);
+      frame.add(field);
    }
    
    public void move(int x, int y){
@@ -69,6 +63,7 @@ public class Maze2 implements KeyListener{
             }
          row++;
          }
+         inputFile.close();
       }catch(IOException e){
          System.out.println("invalid maze file");
          System.exit(1);
@@ -77,6 +72,7 @@ public class Maze2 implements KeyListener{
    
    public void startGame(){
       history = new ArrayList<String>();
+      options = new ArrayList<String>();
       Random random = new Random();
       boolean test = true;
       while(test){
@@ -87,7 +83,6 @@ public class Maze2 implements KeyListener{
          }
       }
       System.out.println(xLoc + ", " + yLoc);
-      options = "";
       frame.setVisible(true);
       showOptions();
    }
@@ -104,11 +99,11 @@ public class Maze2 implements KeyListener{
    }
 
    public void getOptions(){
-      options = "";
-      if(maze[yLoc-1][xLoc]!=1)options += "up, ";
-      if(maze[yLoc+1][xLoc]!=1)options += "down, ";
-      if(maze[yLoc][xLoc-1]!=1)options += "left, ";
-      if(maze[yLoc][xLoc+1]!=1)options += "right, ";
+      options.clear();
+      if(maze[yLoc-1][xLoc]!=1)options.add("up");
+      if(maze[yLoc+1][xLoc]!=1)options.add("down");
+      if(maze[yLoc][xLoc-1]!=1)options.add("left");
+      if(maze[yLoc][xLoc+1]!=1)options.add("right");
    }
 
    public String getFileInput(){
@@ -118,29 +113,30 @@ public class Maze2 implements KeyListener{
       while(test){
          System.out.print("please enter a maze file name.");
          filename = keyboard.nextLine();
-         if(filename == null)filename = "maze1.txt";
+         if(filename.equals(null))filename = "maze1.txt";
          try{
-            File testFile = new File(filename);
-            Scanner testScan = new Scanner(testFile);
+            testFile(filename);
             test = false;
          }
          catch(IOException e){
             try{
-               filename += ".txt";
-               File testFile = new File(filename);
-               Scanner testScan = new Scanner(testFile);
+               testFile(filename += ".txt");
                test = false;
             }
             catch(IOException ex){
             }
          }
       }
-      keyboard.close();
       return filename;
+   }
+   
+   public void testFile(String filename) throws IOException{
+      File testFile = new File(filename);
+      Scanner testScan = new Scanner(testFile);
    }
 
    public void keyPressed(KeyEvent e){
-      System.out.println(e.getKeyCode());
+      //System.out.println(e.getKeyCode());
       switch(e.getKeyCode())
          {
          case 37: move(-1,0);break;
