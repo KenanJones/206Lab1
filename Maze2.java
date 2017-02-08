@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.io.*;
 
 public class Maze2 implements KeyListener{
+   
    private JFrame frame;
    private JTextField field;
 
@@ -24,10 +25,9 @@ public class Maze2 implements KeyListener{
 
    public void buildDisplay(){
       frame = new JFrame();
-      frame.setSize(11,11);
-      frame.setLocation(-100,-100);
+      frame.setSize(300,15);
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      field = new JTextField(1);
+      field = new JTextField();
       field.addKeyListener(this);
       frame.add(field);
    }
@@ -70,6 +70,30 @@ public class Maze2 implements KeyListener{
       }
    }
    
+    public String getFileInput(){
+      String filename = "";
+      Scanner keyboard = new Scanner(System.in);
+      boolean test = true;
+      while(test){
+         System.out.print("please enter a maze file name.");
+         filename = keyboard.nextLine();
+         if(filename.equals(null))filename = "maze1.txt";
+         try{
+            testFile(filename);
+            test = false;
+         }
+         catch(IOException e){
+            try{
+               testFile(filename += ".txt");
+               test = false;
+            }
+            catch(IOException ex){
+            }
+         }
+      }
+      return filename;
+   }
+   
    public void startGame(){
       history = new ArrayList<String>();
       options = new ArrayList<String>();
@@ -104,30 +128,6 @@ public class Maze2 implements KeyListener{
       if(maze[yLoc+1][xLoc]!=1)options.add("down");
       if(maze[yLoc][xLoc-1]!=1)options.add("left");
       if(maze[yLoc][xLoc+1]!=1)options.add("right");
-   }
-
-   public String getFileInput(){
-      String filename = "";
-      Scanner keyboard = new Scanner(System.in);
-      boolean test = true;
-      while(test){
-         System.out.print("please enter a maze file name.");
-         filename = keyboard.nextLine();
-         if(filename.equals(null))filename = "maze1.txt";
-         try{
-            testFile(filename);
-            test = false;
-         }
-         catch(IOException e){
-            try{
-               testFile(filename += ".txt");
-               test = false;
-            }
-            catch(IOException ex){
-            }
-         }
-      }
-      return filename;
    }
    
    public void testFile(String filename) throws IOException{
