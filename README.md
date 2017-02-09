@@ -1,2 +1,2 @@
 # CPS206
-this is the first lab. Uses JTextArea and JBoxLayout
+this is the first lab. Adds monsters, and still uses key listeners.
