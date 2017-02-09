@@ -16,21 +16,21 @@ public class Maze implements KeyListener{
 
       getMazeFile("maze1.txt");
       buildDisplay();
-      startGame();
+      startGame(0);
    }
 
 public Maze(String mazeFileName){
 
       getMazeFile(mazeFileName);
       buildDisplay();
-      startGame();
+      startGame(0);
    }
 
 public Maze(String mazeFileName, int monsters){
 
       getMazeFile(mazeFileName);
       buildDisplay();
-      startGame();
+      startGame(monsters);
    }
 
    public static void main (String[] args) throws IOException{
@@ -64,6 +64,11 @@ public Maze(String mazeFileName, int monsters){
          }
       }
    }
+   
+   public void testFile(String filename) throws IOException{
+      File testFile = new File(filename);
+      Scanner testScan = new Scanner(testFile);
+   }
 
    public void buildMaze(String filename) throws IOException{
 	    File file = new File(filename);
@@ -84,10 +89,19 @@ public Maze(String mazeFileName, int monsters){
       inputFile.close();
   }
 
-   public void startGame(){
+   public void startGame(int numberOfMonsters){
       history = new ArrayList<String>();
       options = new ArrayList<String>();
       Random random = new Random();
+      int i = 0;
+      while(i < numberOfMonsters){
+         int y = random.nextInt(maze.length);
+         int x = random.nextInt(maze[0].length);
+         if(maze[y][x] == 0){
+            maze[y][x] = 2;
+            i++;
+         }
+      }
       boolean test = true;
       while(test){
          yLoc = random.nextInt(maze.length);
@@ -100,6 +114,10 @@ public Maze(String mazeFileName, int monsters){
       showOptions();
    }
 
+   public void walk(String direction){
+   move(direction);
+   }
+   
    public void move(String direction){
 
       if(direction.equals("left") && options.contains("left")){xLoc--; history.add("left");}
@@ -111,6 +129,10 @@ public Maze(String mazeFileName, int monsters){
          System.out.printf("Congratulations! You Escaped in %d moves!\n",history.size());
          System.out.println("You Moved: " + history);
          System.exit(0);
+      }
+      if(maze[yLoc][xLoc] == 2){
+         System.out.println("Monster! Run!");
+         runFromMonster();
       }
    }
 
@@ -132,19 +154,22 @@ public Maze(String mazeFileName, int monsters){
       if(maze[yLoc][xLoc-1]!=1)options.add("left");
       if(maze[yLoc][xLoc+1]!=1)options.add("right");
    }
-
-   public void testFile(String filename) throws IOException{
-      File testFile = new File(filename);
-      Scanner testScan = new Scanner(testFile);
+   
+   public void runFromMonster(){
+      for(int i = 0; i < 5; i++){
+         getOptions();
+         Random random = new Random();
+         move(options.get(random.nextInt(options.size())));
+      }
    }
 
    public void keyPressed(KeyEvent e){
       //System.out.println(e.getKeyCode());
       switch(e.getKeyCode()){
-         case 37: move("left");break;
-         case 38: move("up");break;
-         case 39: move("right");break;
-         case 40: move("down");break;
+         case 37: walk("left");break;
+         case 38: walk("up");break;
+         case 39: walk("right");break;
+         case 40: walk("down");break;
          default: showHistory();
       }
    showOptions();
