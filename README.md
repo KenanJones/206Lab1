@@ -1,2 +1,2 @@
 # CPS206
-this is the first lab. Uses JTextArea and JBoxLayout
+This is the first lab. Uses a JFrame to implement keyListener, uses grabFocus, which you are not supposed to do.
