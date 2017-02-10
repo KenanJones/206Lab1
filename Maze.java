@@ -34,7 +34,9 @@ public Maze(String mazeFileName, int monsters){
    }
 
    public static void main (String[] args) throws IOException{
-      if(args.length >= 1)
+     if(args.length >= 2)
+       new Maze(args[0],Integer.valueOf(args[1]));
+     else if(args.length >= 1)
          new Maze(args[0]);
       else new Maze();
       }
@@ -64,7 +66,7 @@ public Maze(String mazeFileName, int monsters){
          }
       }
    }
-   
+
    public void testFile(String filename) throws IOException{
       File testFile = new File(filename);
       Scanner testScan = new Scanner(testFile);
@@ -100,6 +102,7 @@ public Maze(String mazeFileName, int monsters){
          if(maze[y][x] == 0){
             maze[y][x] = 2;
             i++;
+            System.out.println(x +", " + y);
          }
       }
       boolean test = true;
@@ -114,10 +117,10 @@ public Maze(String mazeFileName, int monsters){
       showOptions();
    }
 
-   public void walk(String direction){
+   /*public void walk(String direction){
    move(direction);
-   }
-   
+ }*/
+
    public void move(String direction){
 
       if(direction.equals("left") && options.contains("left")){xLoc--; history.add("left");}
@@ -131,7 +134,7 @@ public Maze(String mazeFileName, int monsters){
          System.exit(0);
       }
       if(maze[yLoc][xLoc] == 2){
-         System.out.println("Monster! Run!");
+         System.out.println("Monster! Run!" + xLoc + ", " + yLoc);
          runFromMonster();
       }
    }
@@ -154,22 +157,24 @@ public Maze(String mazeFileName, int monsters){
       if(maze[yLoc][xLoc-1]!=1)options.add("left");
       if(maze[yLoc][xLoc+1]!=1)options.add("right");
    }
-   
+
    public void runFromMonster(){
+      ArrayList<String> historyCopy = new ArrayList<>(history);
       for(int i = 0; i < 5; i++){
          getOptions();
          Random random = new Random();
          move(options.get(random.nextInt(options.size())));
       }
+      history = historyCopy;
    }
 
    public void keyPressed(KeyEvent e){
       //System.out.println(e.getKeyCode());
       switch(e.getKeyCode()){
-         case 37: walk("left");break;
-         case 38: walk("up");break;
-         case 39: walk("right");break;
-         case 40: walk("down");break;
+         case 37: move("left");break;
+         case 38: move("up");break;
+         case 39: move("right");break;
+         case 40: move("down");break;
          default: showHistory();
       }
    showOptions();
