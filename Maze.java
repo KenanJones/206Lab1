@@ -19,27 +19,27 @@ public class Maze implements KeyListener{
       startGame(0);
    }
 
-public Maze(String mazeFileName){
+   public Maze(String mazeFileName){
 
       getMazeFile(mazeFileName);
       buildDisplay();
       startGame(0);
    }
 
-public Maze(String mazeFileName, int monsters){
+   public Maze(String mazeFileName, int monsters){
 
       getMazeFile(mazeFileName);
       buildDisplay();
       startGame(monsters);
    }
 
-   public static void main (String[] args) throws IOException{
-     if(args.length >= 2)
-       new Maze(args[0],Integer.valueOf(args[1]));
-     else if(args.length >= 1)
+   public static void main (String[] args){
+      if(args.length >= 2)
+         new Maze(args[0],Integer.valueOf(args[1]));
+      else if(args.length >= 1)
          new Maze(args[0]);
       else new Maze();
-      }
+     }
 
    public void buildDisplay(){
       frame = new JFrame();
@@ -61,7 +61,7 @@ public Maze(String mazeFileName, int monsters){
             buildMaze(filename);
          }
          catch(IOException ex){
-	          System.out.println("invalid maze file");
+	         System.out.println("invalid maze file");
             System.exit(1);
          }
       }
@@ -73,18 +73,18 @@ public Maze(String mazeFileName, int monsters){
    }
 
    public void buildMaze(String filename) throws IOException{
-	    File file = new File(filename);
+	   File file = new File(filename);
       Scanner inputFile = new Scanner(file);
-	    maze = new int[inputFile.nextInt()][inputFile.nextInt()];
+	   maze = new int[inputFile.nextInt()][inputFile.nextInt()];
       inputFile.nextLine();//consumes an empty line left by nextInt
       int row = 0;
       while(inputFile.hasNext()){
          String input = inputFile.nextLine();
-         for(int i = 0; i < input.length(); i++){
-            if(input.charAt(i) == 'x')
-               maze[row][i] = 1;
-            else if(input.charAt(i) == 'f')
-               maze[row][i] = -1;
+         for(int col = 0; col < input.length(); col++){
+            if(input.charAt(col) == 'x')
+               maze[row][col] = 1;
+            else if(input.charAt(col) == 'f')
+               maze[row][col] = -1;
          }
          row++;
       }
@@ -102,7 +102,6 @@ public Maze(String mazeFileName, int monsters){
          if(maze[y][x] == 0){
             maze[y][x] = 2;
             i++;
-            System.out.println(x +", " + y);
          }
       }
       boolean test = true;
@@ -117,25 +116,32 @@ public Maze(String mazeFileName, int monsters){
       showOptions();
    }
 
-   /*public void walk(String direction){
-   move(direction);
- }*/
-
-   public void move(String direction){
+   public void move(String direction, boolean running){
 
       if(direction.equals("left") && options.contains("left")){xLoc--; history.add("left");}
       else if(direction.equals("right") && options.contains("right")){xLoc++; history.add("right");}
       else if(direction.equals("up") && options.contains("up"))  {yLoc--; history.add("up");}
       else if(direction.equals("down") && options.contains("down")) {yLoc++; history.add("down");}
       else{System.out.print("invalid move! ");}
-      if(maze[yLoc][xLoc] == -1){
-         System.out.printf("Congratulations! You Escaped in %d moves!\n",history.size());
-         System.out.println("You Moved: " + history);
-         System.exit(0);
-      }
-      if(maze[yLoc][xLoc] == 2){
-         System.out.println("Monster! Run!" + xLoc + ", " + yLoc);
-         runFromMonster();
+      if(running){
+         if(maze[yLoc][xLoc] == -1){
+            switch(direction){
+               case "left": move("right",true); break;
+               case "right": move("left",true); break;
+               case "up": move("down",true); break;
+               case "down": move("up",true); break;
+            }
+         }
+      }else{
+         if(maze[yLoc][xLoc] == -1){
+            System.out.printf("Congratulations! You Escaped in %d moves!\n",history.size());
+            System.out.println("You Moved: " + history);
+            System.exit(0);
+         }
+         if(maze[yLoc][xLoc] == 2){
+            System.out.println("Monster! Run!");
+            runFromMonster();
+         }
       }
    }
 
@@ -163,18 +169,17 @@ public Maze(String mazeFileName, int monsters){
       for(int i = 0; i < 5; i++){
          getOptions();
          Random random = new Random();
-         move(options.get(random.nextInt(options.size())));
+         move(options.get(random.nextInt(options.size())), true);
       }
       history = historyCopy;
    }
 
    public void keyPressed(KeyEvent e){
-      //System.out.println(e.getKeyCode());
       switch(e.getKeyCode()){
-         case 37: move("left");break;
-         case 38: move("up");break;
-         case 39: move("right");break;
-         case 40: move("down");break;
+         case 37: move("left",false);break;
+         case 38: move("up", false);break;
+         case 39: move("right", false);break;
+         case 40: move("down", false);break;
          default: showHistory();
       }
    showOptions();
