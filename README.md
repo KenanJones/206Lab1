@@ -1,2 +1,2 @@
 # CPS206
-this is the first lab. Adds monsters, and still uses key listeners.
+this is the first lab. Has monsters, and still uses key listeners.
